@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#111318" />
+<title>Midnight Meters — Criminal Identification</title>
+<style>
+:root{color-scheme:dark;--bg:#101216;--panel:#191d24;--panel2:#202630;--line:#343c48;--text:#f0f1f3;--muted:#9ba4b1;--accent:#d7a64a;--red:#c85b5b;--green:#78b88b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#202630 0,#101216 55%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:1050px;margin:auto;padding:26px 18px 48px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:22px}.eyebrow{letter-spacing:.19em;color:var(--accent);font-size:11px;font-weight:800}.title{font-size:clamp(27px,5vw,42px);line-height:1.05;letter-spacing:.035em;margin:7px 0}.sub{color:var(--muted);margin:8px 0 0}.version{border:1px solid var(--line);padding:7px 10px;border-radius:6px;color:var(--muted);font-size:11px;white-space:nowrap}
+.layout{display:grid;grid-template-columns: minmax(0,1.1fr) minmax(300px,.9fr);gap:18px}.panel{background:linear-gradient(160deg,rgba(32,38,48,.96),rgba(23,27,34,.98));border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 12px 32px #0003}.panel h2{font-size:15px;letter-spacing:.12em;margin:0 0 5px;text-transform:uppercase}.hint{color:var(--muted);font-size:13px;margin:0 0 16px}.evidence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.evidence{min-height:54px;border:1px solid #4a5360;background:#242b35;color:var(--text);border-radius:8px;padding:10px 12px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:650;cursor:pointer;transition:.15s}.evidence:hover:not(:disabled){border-color:var(--accent);transform:translateY(-1px)}.evidence .mark{font-size:11px;color:var(--muted);font-weight:700}.evidence.selected{background:#44351d;border-color:var(--accent);box-shadow:inset 0 0 0 1px #d7a64a55}.evidence.selected .mark{color:var(--accent)}.evidence:disabled{opacity:.27;cursor:not-allowed;text-decoration:line-through}.toolbar{display:flex;gap:9px;align-items:center;justify-content:space-between;margin-top:15px;flex-wrap:wrap}.btn{background:transparent;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:9px 12px;font-weight:700;cursor:pointer}.btn:hover{border-color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#171717}.counter{font-size:12px;color:var(--muted)}.stats{display:flex;gap:10px;margin:0 0 14px}.stat{flex:1;background:#14181e;border:1px solid var(--line);border-radius:8px;padding:10px}.stat strong{display:block;font-size:23px}.stat span{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.criminals{display:grid;gap:9px}.criminal{border:1px solid var(--line);border-radius:9px;padding:12px 13px;background:#171c23;transition:.15s}.criminal-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.criminal-name{font-weight:800;letter-spacing:.02em}.status{font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:1px solid #476c52;color:#a5d4b0;padding:3px 7px;border-radius:20px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.tag{font-size:11px;color:#c5ccd5;background:#252d37;border:1px solid #3b4552;border-radius:5px;padding:3px 7px}.criminal.eliminated{opacity:.25;filter:grayscale(1)}.criminal.eliminated .status{border-color:#754747;color:#d38d8d}.criminal.eliminated .criminal-name{text-decoration:line-through}.footer-note{color:var(--muted);font-size:12px;margin-top:13px}.all-clear{display:none;background:#442626;border:1px solid #8d4d4d;color:#f2caca;padding:10px;border-radius:8px;margin-bottom:12px;font-size:13px}.all-clear.show{display:block}.selection{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}.select-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.select-row select{flex:1;min-width:180px;background:#14181e;border:1px solid var(--line);color:var(--text);border-radius:7px;padding:10px}.result{margin-top:10px;color:var(--muted);font-size:13px;min-height:20px}.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:5px}.dot.gray{background:#657080}
+.trait-reference{margin-top:18px}.trait-heading-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.trait-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.trait-card{background:#14181e;border:1px solid var(--line);border-radius:8px;padding:12px}.trait-name{font-weight:800;color:var(--accent);margin-bottom:5px}.trait-description{font-size:13px;color:#c5ccd5;margin:0}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.top{align-items:flex-start}.version{display:none}.panel{padding:15px}.evidence-grid{grid-template-columns:1fr 1fr}.trait-grid{grid-template-columns:1fr 1fr}.trait-heading-row .version{display:none}}
+@media(max-width:390px){.evidence-grid,.trait-grid{grid-template-columns:1fr}.wrap{padding:20px 12px 35px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div><div class="eyebrow">MIDNIGHT METERS GAMESHOW · DRIVER FIELD MANUAL</div><h1 class="title">CRIMINAL IDENTIFICATION</h1><p class="sub">Record the evidence. Narrow the suspects. Make the right call.</p></div><div class="version">CLASSIFIED · FILE 001</div></header>
+<main class="layout">
+<section class="panel">
+<h2>Evidence Log</h2><p class="hint">Select each attribute discovered during the ride. Select it again to clear it.</p>
+<div class="evidence-grid" id="evidenceGrid"></div>
+<div class="toolbar"><span class="counter" id="selectedCount">0 attributes recorded</span><button class="btn" id="resetBtn" type="button">Reset evidence</button></div>
+<div class="legend"><span><i class="dot"></i> Selected evidence</span><span><i class="dot gray"></i> Incompatible / unavailable</span></div>
+<div class="selection">
+<h2>Passenger Identification</h2><p class="hint">When you're ready, choose who you believe is in the taxi.</p>
+<div class="select-row"><select id="suspectSelect" aria-label="Choose suspected criminal"><option value="">Select a criminal…</option></select><button class="btn primary" id="identifyBtn" type="button">Mark passenger</button></div>
+<div class="result" id="result" aria-live="polite"></div>
+</div>
+</section>
+<section class="panel">
+<h2>Possible Criminals</h2><p class="hint">Suspects without all selected evidence are automatically eliminated.</p>
+<div class="stats"><div class="stat"><strong id="remainingCount">8</strong><span>Remaining</span></div><div class="stat"><strong id="eliminatedCount">0</strong><span>Eliminated</span></div></div>
+<div class="all-clear" id="noMatches">No criminals match this combination. Clear one or more attributes and try again.</div>
+<div class="criminals" id="criminalList"></div>
+<p class="footer-note">A suspect remains possible only if they possess every selected attribute. Unselected evidence is not treated as absent.</p>
+</section>
+</main>
+<section class="panel trait-reference" aria-labelledby="traitHeading">
+  <div class="trait-heading-row">
+    <div><h2 id="traitHeading">Trait Reference</h2><p class="hint">Review what each attribute means at any point during the ride.</p></div>
+    <span class="version">FIELD GUIDE · 8 TRAITS</span>
+  </div>
+  <div class="trait-grid" id="traitGrid"></div>
+</section>
+</div>
+<script>
+const records = [
+  {name:'Robber', evidence:['Addiction','Aggression','Obsession']},
+  {name:'Arsonist', evidence:['Emotional Instability','Obsession','Delusions']},
+  {name:'Gangster', evidence:['Rituals','Aggression','Paranoia']},
+  {name:'Murderer', evidence:['Jammer','Aggression','Emotional Instability']},
+  {name:'Drug Dealer', evidence:['Addiction','Paranoia','Obsession']},
+  {name:'Cannibal', evidence:['Delusions','Rituals','Emotional Instability']},
+  {name:'Kidnapper', evidence:['Paranoia','Jammer','Aggression']},
+  {name:'Hacker', evidence:['Obsession','Jammer','Delusions']}
+];
+const evidenceTypes = ['Addiction','Emotional Instability','Rituals','Jammer','Aggression','Delusions','Paranoia','Obsession'];
+const traitDescriptions = [
+  {name:'Addiction', description:'Frequently moving or using any sort of substance.'},
+  {name:'Emotional Instability', description:'Joy, fear or grief may slip beyond their control.'},
+  {name:'Rituals', description:'Frequently religious symbols or practices without warning. Can include demonic rituals and symbols.'},
+  {name:'Jammer', description:'If the technology in your car starts going haywire, the passenger may be the cause.'},
+  {name:'Aggression', description:'Their anger may lead them to harm themselves, objects in the car, or the driver.'},
+  {name:'Delusions', description:'They may look, speak or react as if someone else was on the road or in the car.'},
+  {name:'Paranoia', description:'May frantically look around, move their hands, and frequently wipe sweat from their head.'},
+  {name:'Obsession', description:'They may talk about a specific thing or person too often and in too much detail.'}
+];
+const selected = new Set();
+const $ = id => document.getElementById(id);
+function candidates(){return records.filter(r=>[...selected].every(e=>r.evidence.includes(e)));}
+function renderTraitReference(){
+  $('traitGrid').innerHTML='';
+  traitDescriptions.forEach(trait=>{
+    const card=document.createElement('article');card.className='trait-card';
+    const name=document.createElement('div');name.className='trait-name';name.textContent=trait.name;
+    const description=document.createElement('p');description.className='trait-description';description.textContent=trait.description;
+    card.append(name,description);$('traitGrid').appendChild(card);
+  });
+}
+function render(){
+  const possible=candidates();
+  $('evidenceGrid').innerHTML='';
+  evidenceTypes.forEach(e=>{
+    const compatible=possible.some(r=>r.evidence.includes(e));
+    const b=document.createElement('button'); b.type='button'; b.className='evidence'+(selected.has(e)?' selected':'');
+    b.disabled=!compatible&&!selected.has(e);
+    b.innerHTML=`<span>${e}</span><span class="mark">${selected.has(e)?'RECORDED':compatible?'AVAILABLE':'—'}</span>`;
+    b.setAttribute('aria-pressed',String(selected.has(e)));
+    b.addEventListener('click',()=>{if(selected.has(e))selected.delete(e);else selected.add(e);$('result').textContent='';render();});
+    $('evidenceGrid').appendChild(b);
+  });
+  $('criminalList').innerHTML='';
+  records.forEach(r=>{
+    const alive=possible.includes(r);const card=document.createElement('div');card.className='criminal'+(alive?'':' eliminated');
+    card.innerHTML=`<div class="criminal-top"><span class="criminal-name">${r.name}</span><span class="status">${alive?'Possible':'Eliminated'}</span></div><div class="tags">${r.evidence.map(e=>`<span class="tag">${e}</span>`).join('')}</div>`;
+    $('criminalList').appendChild(card);
+  });
+  $('selectedCount').textContent=`${selected.size} attribute${selected.size===1?'':'s'} recorded`;
+  $('remainingCount').textContent=possible.length;$('eliminatedCount').textContent=records.length-possible.length;
+  $('noMatches').classList.toggle('show',possible.length===0);
+  const select=$('suspectSelect'),old=select.value;
+  select.innerHTML='<option value="">Select a criminal…</option>';
+  records.forEach(r=>{const o=document.createElement('option');o.value=r.name;o.textContent=r.name+(possible.includes(r)?'':' (eliminated)');o.disabled=!possible.includes(r);select.appendChild(o);});
+  if([...select.options].some(o=>o.value===old&&!o.disabled))select.value=old;
+}
+$('resetBtn').addEventListener('click',()=>{selected.clear();$('result').textContent='';render();});
+$('identifyBtn').addEventListener('click',()=>{const name=$('suspectSelect').value;if(!name){$('result').textContent='Select a possible criminal first.';return;}const r=records.find(x=>x.name===name);const missing=r.evidence.filter(e=>!selected.has(e));$('result').textContent=missing.length?`Identification marked: ${name}. You have not yet confirmed: ${missing.join(', ')}.`:`Identification marked: ${name}. All three of their attributes have been recorded.`;});
+render();
+renderTraitReference();
+</script>
+</body>
+</html>
